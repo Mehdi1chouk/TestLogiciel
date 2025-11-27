@@ -53,8 +53,13 @@ public class LoginPage {
     }
 
 
+    public String Errormessage() {
+        WebElement successMessage = wait.until(
+                ExpectedConditions.visibilityOfElementLocated(By.cssSelector(".flash.error") )
+        );
 
+        String messageText = successMessage.getText();
 
-
-
+        return messageText;
+    }
 }

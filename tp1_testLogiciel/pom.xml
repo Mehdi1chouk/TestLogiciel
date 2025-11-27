@@ -85,7 +85,23 @@
 
 
 
+<build>
 
+
+    <plugins>
+
+        <plugin>
+            <artifactId>maven-surefire-plugin</artifactId>
+            <version>3.2.5</version>
+            <configuration>
+                <includes>
+                    <include>**/*Runner.class</include>
+                </includes>
+            </configuration>
+        </plugin>
+
+    </plugins>
+</build>
 
 
 

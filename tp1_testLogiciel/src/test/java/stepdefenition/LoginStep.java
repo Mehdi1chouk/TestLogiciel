@@ -22,14 +22,15 @@ public class LoginStep extends TestBase {
         loginPage.openLoginPage();
     }
 
-    @When("the user enters a username")
-    public void the_user_enters_a_username() {
-        loginPage.enterUsername("tomsmith");  // Hardcoded valid username
+    @When("the user enters a username as {string}")
+    public void the_user_enters_a_username(String username) {
+
+        loginPage.enterUsername(username);  // Hardcoded valid username
     }
 
-    @When("the user enters a password")
-    public void the_user_enters_a_password() {
-        loginPage.enterPassword("SuperSecretPassword!");  // Hardcoded valid password
+    @When("the user enters a password as {string}")
+    public void the_user_enters_a_password(String password) {
+        loginPage.enterPassword(password);  // Hardcoded valid password
     }
 
     @And("clicks on the login button")
@@ -45,4 +46,17 @@ public class LoginStep extends TestBase {
                 "Le message de succès n'est pas correct!"
         );
     }
+
+
+    @Then("the user should see an error message")
+    public void the_user_should_see_an_error_login_message() {
+        String msg = loginPage.Errormessage();
+        Assertions.assertTrue(
+                msg.contains("Your username is invalid!") || msg.contains("Your password is invalid!"),
+                "Le message d'erreur n'est pas correct! Message reçu: " + msg
+        );
+    }
+
+
+
 }
