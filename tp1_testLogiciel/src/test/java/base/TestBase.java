@@ -47,40 +47,39 @@ public class TestBase {
     // Made static so Hooks can call without instantiation
     public static String captureScreenshot(String scenarioName) {
         try {
-            // Vérifier que le driver peut prendre une capture
             TakesScreenshot ts = (TakesScreenshot) driver;
-
-            // Capture d’écran en bytes
             byte[] screenshotBytes = ts.getScreenshotAs(OutputType.BYTES);
 
-            // Créer le dossier target/screenshots/ s’il n’existe pas
+            // Create screenshots folder if not exists
             File directory = new File("target/screenshots/");
             if (!directory.exists()) {
                 directory.mkdirs();
             }
 
-            // Créer un horodatage unique
+            // Unique timestamp
             String timestamp = LocalDateTime.now()
                     .format(DateTimeFormatter.ofPattern("yyyyMMdd-HHmmss"));
 
-            // Nom complet du fichier
+            // File name
             String fileName = scenarioName + "_" + timestamp + ".png";
+
             File screenshotFile = new File(directory, fileName);
 
-            // Écrire les bytes dans un fichier
+            // Write bytes to file
             try (FileOutputStream fos = new FileOutputStream(screenshotFile)) {
                 fos.write(screenshotBytes);
             }
 
-            // Afficher le chemin absolu dans la console
-            String absolutePath = screenshotFile.getAbsolutePath();
-            System.out.println("Capture enregistrée : " + absolutePath);
+            // Use relative path for ExtentReports
+            String relativePath = "target/screenshots/" + fileName;
+            System.out.println("Capture enregistrée : " + relativePath);
 
-            return absolutePath;
+            return relativePath;
 
         } catch (IOException | WebDriverException e) {
-            System.err.println(" Erreur lors de la capture d’écran : " + e.getMessage());
+            System.err.println("Erreur lors de la capture d’écran : " + e.getMessage());
             return "";
         }
     }
+
 }
