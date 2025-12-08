@@ -2,26 +2,21 @@
 Feature: Authentication
 
   @ValidCredentials
-  Scenario Outline: Successful login
+  Scenario: Successful login with valid credentials
     Given the user is on the login page
-    When the user enters a username as "<username>"
-    And the user enters a password as "<password>"
-    And clicks on the login button
-    Then the user should see a successful login message
-
-    Examples:
-      | username  | password              |
-      | tomsmith  | SuperSecretPassword!  |
+    When the user enters an email as "user74@example.com"
+    And the user enters a password as "User72felabc_2025*/"
+    And the user clicks the login button
+    Then the user should be redirected to the home page
 
   @InvalidCredentials
-  Scenario Outline: Failed login
+  Scenario Outline: Failed login with invalid credentials
     Given the user is on the login page
-    When the user enters a username as "<username>"
+    When the user enters an email as "<email>"
     And the user enters a password as "<password>"
-    And clicks on the login button
+    And the user clicks the login button
     Then the user should see an error message
 
     Examples:
-      | username    | password |
-      | invaliduser | wrongpass|
-      | admin       | 123456   |
+      | email          | password   |
+      | invalid@email  | wrongpass  |

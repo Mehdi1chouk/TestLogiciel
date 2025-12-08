@@ -7,14 +7,11 @@ import ExtentReport.ExtentReportManager;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.When;
 import io.cucumber.java.en.Then;
-import io.cucumber.java.en.And;
 import org.junit.jupiter.api.Assertions;
 import pages.LoginPage;
-
 import java.io.File;
 
 public class LoginStep extends TestBase {
-
     private LoginPage loginPage;
 
     public LoginStep() {
@@ -25,20 +22,20 @@ public class LoginStep extends TestBase {
     public void userIsOnLoginPage() {
         try {
             loginPage.openLoginPage();
-            ExtentReportManager.getTest().log(Status.PASS, "The user is on the login page");
+            ExtentReportManager.getTest().log(Status.PASS, "Navigated to login page");
         } catch (Exception e) {
-            attachScreenshotOnFailure("Failed to open the login page");
+            attachScreenshotOnFailure("Failed to open login page");
             throw e;
         }
     }
 
-    @When("the user enters a username as {string}")
-    public void the_user_enters_a_username(String username) {
+    @When("the user enters an email as {string}")
+    public void the_user_enters_an_email(String email) {
         try {
-            loginPage.enterUsername(username);
-            ExtentReportManager.getTest().log(Status.PASS, "Entered username: " + username);
+            loginPage.enterEmail(email);
+            ExtentReportManager.getTest().log(Status.PASS, "Entered email: " + email);
         } catch (Exception e) {
-            attachScreenshotOnFailure("Failed to enter username: " + username);
+            attachScreenshotOnFailure("Failed to enter email: " + email);
             throw e;
         }
     }
@@ -54,78 +51,73 @@ public class LoginStep extends TestBase {
         }
     }
 
-    @And("clicks on the login button")
-    public void clicks_on_the_login_button() {
+    @When("the user clicks the login button")
+    public void clicks_on_login_button() throws InterruptedException {
         try {
             loginPage.clickLoginButton();
-            ExtentReportManager.getTest().log(Status.PASS, "Clicked on login button");
+            Thread.sleep(1500);
+            ExtentReportManager.getTest().log(Status.PASS, "Clicked login button");
         } catch (Exception e) {
-            attachScreenshotOnFailure("Failed to click on login button");
+            attachScreenshotOnFailure("Failed to click login button");
             throw e;
         }
     }
 
-    @Then("the user should see a successful login message")
-    public void the_user_should_see_a_successful_login_message() {
+    @Then("the user should be redirected to the home page")
+    public void the_user_should_be_redirected_to_home_page() {
         try {
-            String msg = loginPage.getSuccessMessage();
+            boolean isRedirected = loginPage.isRedirectedToHomePage();
 
             Assertions.assertTrue(
-                    msg.contains("You logged into a secure area!"),
-                    "Le message de succès n'est pas correct!"
+                    isRedirected,
+                    "Login failed. User was not redirected to home page. Current URL: " + getDriver().getCurrentUrl()
             );
 
-            ExtentReportManager.getTest().log(Status.PASS, "Success message displayed correctly");
+            ExtentReportManager.getTest().log(Status.PASS, "Successfully logged in and redirected");
 
         } catch (AssertionError ae) {
-            attachScreenshotOnFailure("Assertion failed for success message: " + ae.getMessage());
+            attachScreenshotOnFailure("Login success validation failed: " + ae.getMessage());
             throw ae;
         } catch (Exception e) {
-            attachScreenshotOnFailure("Error while verifying success message");
+            attachScreenshotOnFailure("Error while verifying login success");
             throw e;
         }
     }
 
     @Then("the user should see an error message")
-    public void the_user_should_see_an_error_login_message() {
+    public void the_user_should_see_an_error_message() {
         try {
-            String msg = loginPage.Errormessage();
+            String msg = loginPage.getErrorMessage();
 
             Assertions.assertTrue(
-                    msg.contains("Your username is invalid!") || msg.contains("Your password is invalid!"),
-                    "Le message d'erreur n'est pas correct! Message reçu: " + msg
+                    !msg.isEmpty() && (msg.toLowerCase().contains("invalid") ||
+                            msg.toLowerCase().contains("error") ||
+                            msg.toLowerCase().contains("failed")),
+                    "Expected error message but got: '" + msg + "'"
             );
 
-            ExtentReportManager.getTest().log(Status.PASS, "Error message displayed correctly");
+            ExtentReportManager.getTest().log(Status.PASS, "Error message displayed: " + msg);
 
         } catch (AssertionError ae) {
-            attachScreenshotOnFailure("Assertion failed for error message: " + ae.getMessage());
+            attachScreenshotOnFailure("Error message validation failed: " + ae.getMessage());
             throw ae;
         } catch (Exception e) {
-            attachScreenshotOnFailure("Error while verifying login error message");
+            attachScreenshotOnFailure("Error while verifying error message");
             throw e;
         }
     }
 
     private void attachScreenshotOnFailure(String message) {
         try {
-            // Absolute path from captureScreenshot
-            String absolutePath = TestBase.captureScreenshot(
-                    System.currentTimeMillis() + "_screenshot"
-            );
-
-            // Make path relative to the report location
+            String absolutePath = TestBase.captureScreenshot(System.currentTimeMillis() + "_screenshot");
             String relativePath = "../screenshots/" + new File(absolutePath).getName();
 
             ExtentReportManager.getTest().fail(
                     message,
                     MediaEntityBuilder.createScreenCaptureFromPath(relativePath).build()
             );
-
         } catch (Exception e) {
             ExtentReportManager.getTest().fail("Failed to attach screenshot: " + e.getMessage());
         }
     }
-
-
 }

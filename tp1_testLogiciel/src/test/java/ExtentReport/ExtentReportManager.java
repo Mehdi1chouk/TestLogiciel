@@ -12,6 +12,16 @@ public class ExtentReportManager {
     private static ExtentReports extent;
     private static ThreadLocal<ExtentTest> extentTest = new ThreadLocal<>();
 
+    // ⭐ ADD THIS STATIC BLOCK ⭐
+    static {
+        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+            if (extent != null) {
+                System.out.println("Flushing Extent Report on JVM shutdown...");
+                extent.flush();
+            }
+        }));
+    }
+
     public static synchronized ExtentReports getInstance() {
         if (extent == null) {
             String timestamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());

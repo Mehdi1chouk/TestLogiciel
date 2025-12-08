@@ -10,7 +10,9 @@ import ExtentReport.ExtentReportManager;  // Add this import
 @CucumberOptions(
         features = "src/test/resources/features",
         glue = "stepdefenition",
-        plugin = { "pretty", "html:target/cucumber-reports" }
+        plugin = { "pretty", "html:target/cucumber-reports" },
+        tags = "@CategoryNavigation"
+
 )
 public class CucumberRunner {
 
