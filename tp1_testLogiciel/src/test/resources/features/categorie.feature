@@ -1,10 +1,11 @@
 @CategoryNavigation
 Feature: Discover categories
 
+
   @SuccessfulFiltering
   Scenario: Navigate through all activity categories
     Given the user is on the activity of catalog page
-    Then take a debug screenshot and show the activities
+
 
     When the user clicks on the "All" category
     And the user should waits for 1 seconds
@@ -31,7 +32,6 @@ Feature: Discover categories
     And the user should waits for 1 seconds
 
     Then the user should see all categories loaded successfully
-
 
   @InvalidCategory
   Scenario: Attempt to filter with empty category

@@ -8,6 +8,7 @@ import io.cucumber.java.en.And;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.When;
 import io.cucumber.java.en.Then;
+import org.junit.Assert;
 import org.junit.jupiter.api.Assertions;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
@@ -154,18 +155,35 @@ public class BookingStep extends TestBase {
 
 
     @Then("the confirm booking button should be disabled")
-    public void verify_confirm_button_disabled() {
+    public void confirm_booking_button_should_be_disabled() {
         try {
-            boolean isEnabled = bookingPage.isConfirmButtonEnabled();
-            Assertions.assertFalse(isEnabled,
-                    "Confirm booking button should be disabled but was enabled");
-            ExtentReportManager.getTest().log(Status.PASS,
-                    "Confirm booking button is correctly disabled");
+            boolean isDisabled = bookingPage.isConfirmButtonDisabled();
+
+            Assert.assertTrue(
+                    "Expected confirm button to be disabled, but it was enabled!",
+                    isDisabled
+            );
+
+            // Take screenshot on SUCCESS of negative test
+            String path = TestBase.captureScreenshot("ConfirmButtonDisabled_Expected");
+            String relative = "../screenshots/" + new File(path).getName();
+
+            ExtentReportManager.getTest().pass(
+                    "Confirm button is correctly disabled (validation success)",
+                    MediaEntityBuilder.createScreenCaptureFromPath(relative).build()
+            );
+
+        } catch (AssertionError ae) {
+            // Take screenshot on FAILURE
+            attachScreenshotOnFailure("Confirm button disabled validation failed: " + ae.getMessage());
+            throw ae;
+
         } catch (Exception e) {
-            attachScreenshotOnFailure("Confirm button state check failed: " + e.getMessage());
+            attachScreenshotOnFailure("Error checking if confirm button is disabled");
             throw e;
         }
     }
+
 
     @And("the user clicks the confirm booking button")
     public void click_confirm_booking() {

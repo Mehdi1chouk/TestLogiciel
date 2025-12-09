@@ -98,6 +98,14 @@ public class LoginStep extends TestBase {
 
             ExtentReportManager.getTest().log(Status.PASS, "Error message displayed: " + msg);
 
+            /* ------------- ADD THIS PART (same as register negative case) ------------- */
+            String screenshotPath = TestBase.captureScreenshot("FailedLogin_ExpectedBehavior");
+            String relativePath = "../screenshots/" + new File(screenshotPath).getName().replace("target/", "");
+
+            ExtentReportManager.getTest().pass("Login failed as expected",
+                    MediaEntityBuilder.createScreenCaptureFromPath(relativePath).build());
+            /* --------------------------------------------------------------------------- */
+
         } catch (AssertionError ae) {
             attachScreenshotOnFailure("Error message validation failed: " + ae.getMessage());
             throw ae;
@@ -106,6 +114,7 @@ public class LoginStep extends TestBase {
             throw e;
         }
     }
+
 
     private void attachScreenshotOnFailure(String message) {
         try {

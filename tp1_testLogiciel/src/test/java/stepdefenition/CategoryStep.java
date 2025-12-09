@@ -2,15 +2,16 @@ package stepdefenition;
 
 import base.TestBase;
 import com.aventstack.extentreports.Status;
+import com.aventstack.extentreports.MediaEntityBuilder;
 import ExtentReport.ExtentReportManager;
 import io.cucumber.java.en.*;
 import org.junit.Assert;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import pages.CategoryPage;
+import java.io.File;
 
 public class CategoryStep extends TestBase {
-
     private CategoryPage categoryPage;
     private boolean categoryClicked = true;
 
@@ -24,14 +25,13 @@ public class CategoryStep extends TestBase {
         ExtentReportManager.getTest().log(Status.INFO, "Opened activity catalog page");
     }
 
-
     @Then("take a debug screenshot and show the activities")
     public void take_debug_screenshot() {
         String screenshotPath = captureScreenshot("category_debug");
-        ExtentReportManager.getTest().log(
-                Status.INFO,
-                "Debug screenshot"
-        );
+        String relativePath = "../screenshots/" + new File(screenshotPath).getName().replace("target/", "");
+
+        ExtentReportManager.getTest().info("Debug screenshot - Activities displayed",
+                MediaEntityBuilder.createScreenCaptureFromPath(relativePath).build());
     }
 
     @When("the user clicks on the {string} category")
@@ -40,14 +40,10 @@ public class CategoryStep extends TestBase {
             categoryPage.clickCategory(categoryName);
             ExtentReportManager.getTest().log(Status.PASS, "Clicked category: " + categoryName);
         } catch (Exception e) {
-            captureScreenshot("Failed to click category: " + categoryName);
+            attachScreenshotOnFailure("Failed to click category: " + categoryName);
             throw e;
         }
     }
-
-
-
-
 
     @And("the user should waits for {int} seconds")
     public void wait_seconds(int seconds) {
@@ -63,10 +59,53 @@ public class CategoryStep extends TestBase {
         ExtentReportManager.getTest().log(Status.PASS, "All categories loaded successfully.");
     }
 
+    @When("the user attempts to click on the {string} category")
+    public void attempt_click_category(String categoryName) {
+        try {
+            if (!categoryPage.categoryExists(categoryName)) {
+                ExtentReportManager.getTest().log(Status.INFO,
+                        "Category '" + categoryName + "' does not exist (expected)");
+            } else {
+                categoryPage.clickCategory(categoryName);
+                ExtentReportManager.getTest().log(Status.WARNING,
+                        "Category '" + categoryName + "' unexpectedly exists and was clicked");
+            }
+        } catch (Exception e) {
+            attachScreenshotOnFailure("Exception occurred while attempting to click category: " + categoryName);
+            throw new RuntimeException("Error in attempt_click_category: " + e.getMessage(), e);
+        }
+    }
+
+    @Then("the category {string} should not exist")
+    public void verify_category_not_exists(String categoryName) {
+        try {
+            // Verify category doesn't exist
+            Assert.assertFalse(
+                    "Category '" + categoryName + "' should not exist!",
+                    categoryPage.categoryExists(categoryName)
+            );
+
+            ExtentReportManager.getTest().log(Status.PASS,
+                    "Category '" + categoryName + "' correctly does not exist");
+
+            // Capture screenshot for expected behavior (same as login negative case)
+            String screenshotPath = TestBase.captureScreenshot("EmptyCategory_NotFound_ExpectedBehavior");
+            String relativePath = "../screenshots/" + new File(screenshotPath).getName().replace("target/", "");
+
+            ExtentReportManager.getTest().pass("Empty category handling verified",
+                    MediaEntityBuilder.createScreenCaptureFromPath(relativePath).build());
+
+        } catch (AssertionError ae) {
+            attachScreenshotOnFailure("Category existence validation failed: " + ae.getMessage());
+            throw ae;
+        } catch (Exception e) {
+            attachScreenshotOnFailure("Error while verifying category existence");
+            throw e;
+        }
+    }
 
     @Then("the application should not open the category")
     public void assert_category_not_opened() {
-        // example: check that URL did not change to a category slug
         String current = driver.getCurrentUrl();
         Assert.assertFalse("URL must not contain a category path!",
                 current.contains("/category/"));
@@ -86,29 +125,17 @@ public class CategoryStep extends TestBase {
                 categoryPage.isNoCategoryActive());
     }
 
-    @When("the user attempts to click on the {string} category")
-    public void attempt_click_category(String categoryName) {
+    private void attachScreenshotOnFailure(String message) {
         try {
-            if (!categoryPage.categoryExists(categoryName)) {
-                ExtentReportManager.getTest().log(Status.INFO,
-                        "Category '" + categoryName + "' does not exist (expected)");
-                // Don't throw, just log
-            } else {
-                categoryPage.clickCategory(categoryName);
-            }
+            String absolutePath = TestBase.captureScreenshot(System.currentTimeMillis() + "_screenshot");
+            String relativePath = "../screenshots/" + new File(absolutePath).getName();
+
+            ExtentReportManager.getTest().fail(
+                    message,
+                    MediaEntityBuilder.createScreenCaptureFromPath(relativePath).build()
+            );
         } catch (Exception e) {
-            ExtentReportManager.getTest().log(Status.INFO,
-                    "Failed to click category as expected: " + categoryName);
+            ExtentReportManager.getTest().fail("Failed to attach screenshot: " + e.getMessage());
         }
     }
-
-    @Then("the category {string} should not exist")
-    public void verify_category_not_exists(String categoryName) {
-        Assert.assertFalse(
-                "Category '" + categoryName + "' should not exist!",
-                categoryPage.categoryExists(categoryName)
-        );
-    }
-
-
 }

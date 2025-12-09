@@ -1,7 +1,6 @@
 @BookingTests
 Feature: Activity Booking Management
 
-
   @SuccessfulBooking
   Scenario: Successfully book a specific activity with valid details
     Given the user is on the login page
@@ -23,6 +22,7 @@ Feature: Activity Booking Management
     And the user clicks the confirm booking button
     Then the user should see booking confirmation modal
     And the booking reference should be displayed
+
 
   @InvalidPhone
   Scenario: Attempt to book with invalid phone format

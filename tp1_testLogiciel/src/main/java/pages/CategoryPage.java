@@ -39,13 +39,20 @@ public class CategoryPage {
             String label = tab.findElement(CATEGORY_LABEL_LOCATOR).getText().trim();
 
             if (label.equalsIgnoreCase(categoryName)) {
+
+                // Click the tab
                 wait.until(ExpectedConditions.elementToBeClickable(tab)).click();
+
+                // Wait for it to become active (Angular updated)
+                wait.until(ExpectedConditions.attributeContains(tab, "class", "active"));
+
                 return;
             }
         }
 
         throw new RuntimeException("Category '" + categoryName + "' not found on UI");
     }
+
 
 
 

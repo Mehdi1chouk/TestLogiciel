@@ -185,24 +185,37 @@ public class RegisterStep extends TestBase {
         }
     }
 
-    @Then("the registration should fail")
-    public void the_registration_should_fail() {
+    @Then("the registration should fail and show error")
+    public void the_registration_should_fail_and_show_error() {
         try {
             boolean isLoggedIn = registerPage.isUserLoggedIn();
 
             Assertions.assertFalse(
                     isLoggedIn,
-                    "User should not be logged in - registration should have failed"
+                    "User should NOT be logged in after failed registration"
             );
 
-            ExtentReportManager.getTest().log(Status.PASS,
-                    "Registration correctly failed as expected");
+            // This is the expected behavior → test passes
+            ExtentReportManager.getTest().log(Status.PASS, "Registration failed as expected (user not logged in)");
+
+            // NOW: Take screenshot on SUCCESS for negative case – to prove the error was shown
+            String screenshotPath = TestBase.captureScreenshot("FailedRegistration_ExpectedBehavior");
+            String relativePath = "../screenshots/" + new File(screenshotPath).getName().replace("target/", "");
+
+            ExtentReportManager.getTest().pass("Error state captured",
+                    MediaEntityBuilder.createScreenCaptureFromPath(relativePath).build());
+
+            // Also log the actual error message from alert (if any)
+            String errorMsg = registerPage.getErrorMessage();
+            if (!errorMsg.isEmpty()) {
+                ExtentReportManager.getTest().info("Error message displayed: " + errorMsg);
+            }
 
         } catch (AssertionError ae) {
-            attachScreenshotOnFailure("Registration failure validation failed: " + ae.getMessage());
+            attachScreenshotOnFailure("Unexpected: Registration should have failed but user was logged in");
             throw ae;
         } catch (Exception e) {
-            attachScreenshotOnFailure("Error while verifying registration failure");
+            attachScreenshotOnFailure("Error during negative registration validation");
             throw e;
         }
     }
