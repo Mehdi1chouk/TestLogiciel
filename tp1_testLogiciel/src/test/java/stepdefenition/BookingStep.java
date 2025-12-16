@@ -27,10 +27,7 @@ public class BookingStep extends TestBase {
     public void user_is_on_catalog_page() throws InterruptedException {
         try {
             bookingPage.openCatalogPage();
-
-            // Add small wait for Angular to load cards
             Thread.sleep(1500);
-
             ExtentReportManager.getTest().log(Status.PASS, "Navigated to activity catalog");
         } catch (Exception e) {
             attachScreenshotOnFailure("Failed to open catalog page");
@@ -42,8 +39,6 @@ public class BookingStep extends TestBase {
     public void debug_catalog() {
         String path = TestBase.captureScreenshot("CATALOG_DEBUG");
         ExtentReportManager.getTest().info("Screenshot: " + path);
-
-        // Log all activity titles found
         List<WebElement> titles = getDriver().findElements(By.cssSelector("h4.activity-title"));
         for (WebElement title : titles) {
             ExtentReportManager.getTest().info("Activity: '" + title.getText() + "'");
@@ -53,7 +48,6 @@ public class BookingStep extends TestBase {
     @When("the user selects and books the {string} activity")
     public void select_and_book_activity(String activityName) {
         try {
-            // This combines selection + click in one step
             bookingPage.selectActivityByName(activityName);
             ExtentReportManager.getTest().log(Status.PASS, "Selected and booked activity: " + activityName);
         } catch (Exception e) {
@@ -163,8 +157,6 @@ public class BookingStep extends TestBase {
                     "Expected confirm button to be disabled, but it was enabled!",
                     isDisabled
             );
-
-            // Take screenshot on SUCCESS of negative test
             String path = TestBase.captureScreenshot("ConfirmButtonDisabled_Expected");
             String relative = "../screenshots/" + new File(path).getName();
 
@@ -174,10 +166,8 @@ public class BookingStep extends TestBase {
             );
 
         } catch (AssertionError ae) {
-            // Take screenshot on FAILURE
             attachScreenshotOnFailure("Confirm button disabled validation failed: " + ae.getMessage());
             throw ae;
-
         } catch (Exception e) {
             attachScreenshotOnFailure("Error checking if confirm button is disabled");
             throw e;

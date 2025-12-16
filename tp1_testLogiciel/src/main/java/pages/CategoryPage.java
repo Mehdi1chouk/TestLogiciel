@@ -14,10 +14,7 @@ public class CategoryPage {
     private WebDriver driver;
     private WebDriverWait wait;
 
-    // 👉 URL of your Angular activity catalog page
     private static final String CATEGORY_URL = "http://localhost:4200/";
-
-    // 👉 Selectors
     private static final By CATEGORY_TAB_LOCATOR = By.cssSelector("button.category-tab");
     private static final By CATEGORY_LABEL_LOCATOR = By.cssSelector("span.category-label");
 
@@ -34,22 +31,15 @@ public class CategoryPage {
         List<WebElement> tabs = wait.until(
                 ExpectedConditions.visibilityOfAllElementsLocatedBy(CATEGORY_TAB_LOCATOR)
         );
-
         for (WebElement tab : tabs) {
             String label = tab.findElement(CATEGORY_LABEL_LOCATOR).getText().trim();
 
             if (label.equalsIgnoreCase(categoryName)) {
-
-                // Click the tab
                 wait.until(ExpectedConditions.elementToBeClickable(tab)).click();
-
-                // Wait for it to become active (Angular updated)
                 wait.until(ExpectedConditions.attributeContains(tab, "class", "active"));
-
                 return;
             }
         }
-
         throw new RuntimeException("Category '" + categoryName + "' not found on UI");
     }
 
@@ -58,7 +48,6 @@ public class CategoryPage {
 
     public boolean isNoCategoryActive() {
         List<WebElement> tabs = driver.findElements(CATEGORY_TAB_LOCATOR);
-
         for (WebElement tab : tabs) {
             if (tab.getAttribute("class").contains("active")) {
                 return false;
@@ -69,7 +58,6 @@ public class CategoryPage {
 
     public boolean categoryExists(String categoryName) {
         List<WebElement> tabs = driver.findElements(CATEGORY_TAB_LOCATOR);
-
         for (WebElement tab : tabs) {
             String label = tab.findElement(CATEGORY_LABEL_LOCATOR).getText().trim();
             if (label.equalsIgnoreCase(categoryName)) {

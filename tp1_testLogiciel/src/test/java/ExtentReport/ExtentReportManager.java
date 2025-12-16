@@ -12,7 +12,6 @@ public class ExtentReportManager {
     private static ExtentReports extent;
     private static ThreadLocal<ExtentTest> extentTest = new ThreadLocal<>();
 
-    // ⭐ ADD THIS STATIC BLOCK ⭐
     static {
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
             if (extent != null) {
@@ -36,6 +35,105 @@ public class ExtentReportManager {
         }
         return extent;
     }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     public static synchronized ExtentTest getTest() {
         return extentTest.get();

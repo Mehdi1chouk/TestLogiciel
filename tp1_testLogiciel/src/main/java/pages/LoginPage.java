@@ -14,12 +14,12 @@ public class LoginPage {
 
     private static final String LOGIN_URL = "http://localhost:4200/login";
 
-    // Use name attributes since Angular generates dynamic ids
+
     private static final By EMAIL_LOCATOR = By.cssSelector("input[name='email']");
     private static final By PASSWORD_LOCATOR = By.cssSelector("input[name='password']");
     private static final By LOGIN_BUTTON_LOCATOR = By.cssSelector("button.login-btn");
 
-    // Error message on Angular form
+
     private static final By ERROR_MESSAGE_LOCATOR = By.cssSelector(".error-message, .alert-danger");
 
     public LoginPage(WebDriver driver) {
@@ -53,7 +53,7 @@ public class LoginPage {
         }
     }
 
-    // After login, Angular likely redirects to /books or /dashboard
+
     public boolean isRedirectedToHomePage() {
         try {
             return wait.until(ExpectedConditions.or(

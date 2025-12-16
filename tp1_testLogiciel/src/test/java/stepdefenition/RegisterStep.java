@@ -30,8 +30,6 @@ public class RegisterStep extends TestBase {
         }
     }
 
-
-
     @When("the user enters first name as {string}")
     public void the_user_enters_first_name(String firstName) {
         try {
@@ -76,19 +74,11 @@ public class RegisterStep extends TestBase {
         }
     }
 
-
-
-
-
-
-
     @And("clicks on the save button")
     public void clicks_on_the_save_button() throws InterruptedException {
         try {
             registerPage.clickSaveButton();
             ExtentReportManager.getTest().log(Status.PASS, "Clicked save button");
-
-            // Add wait for processing
             Thread.sleep(3000);
         } catch (Exception e) {
             attachScreenshotOnFailure("Failed to click save button");
@@ -101,12 +91,10 @@ public class RegisterStep extends TestBase {
         try {
             boolean isLoggedIn = registerPage.isUserLoggedIn();
             String currentUrl = registerPage.getCurrentUrl();
-
             Assertions.assertTrue(
                     isLoggedIn,
                     "User was not automatically logged in after registration. Current URL: " + currentUrl
             );
-
             ExtentReportManager.getTest().log(Status.PASS,
                     "User successfully registered and automatically logged in");
 
@@ -123,15 +111,12 @@ public class RegisterStep extends TestBase {
     public void the_user_should_see_account_page() {
         try {
             boolean isSuccessful = registerPage.isRegistrationSuccessful();
-
             Assertions.assertTrue(
                     isSuccessful,
                     "Registration was not successful - user not redirected to account page"
             );
-
             ExtentReportManager.getTest().log(Status.PASS,
                     "User successfully registered and redirected to account page");
-
         } catch (AssertionError ae) {
             attachScreenshotOnFailure("Account page validation failed: " + ae.getMessage());
             throw ae;
@@ -150,10 +135,8 @@ public class RegisterStep extends TestBase {
                     errorMsg.isEmpty(),
                     "Expected an error message but none was displayed"
             );
-
             ExtentReportManager.getTest().log(Status.PASS,
                     "Registration error displayed: " + errorMsg);
-
         } catch (AssertionError ae) {
             attachScreenshotOnFailure("Error message validation failed: " + ae.getMessage());
             throw ae;
@@ -194,23 +177,16 @@ public class RegisterStep extends TestBase {
                     isLoggedIn,
                     "User should NOT be logged in after failed registration"
             );
-
-            // This is the expected behavior → test passes
             ExtentReportManager.getTest().log(Status.PASS, "Registration failed as expected (user not logged in)");
-
-            // NOW: Take screenshot on SUCCESS for negative case – to prove the error was shown
             String screenshotPath = TestBase.captureScreenshot("FailedRegistration_ExpectedBehavior");
             String relativePath = "../screenshots/" + new File(screenshotPath).getName().replace("target/", "");
 
             ExtentReportManager.getTest().pass("Error state captured",
                     MediaEntityBuilder.createScreenCaptureFromPath(relativePath).build());
-
-            // Also log the actual error message from alert (if any)
             String errorMsg = registerPage.getErrorMessage();
             if (!errorMsg.isEmpty()) {
                 ExtentReportManager.getTest().info("Error message displayed: " + errorMsg);
             }
-
         } catch (AssertionError ae) {
             attachScreenshotOnFailure("Unexpected: Registration should have failed but user was logged in");
             throw ae;

@@ -21,7 +21,6 @@ public class BookingPage {
     private static final By BOOK_NOW_BUTTON_LOCATOR = By.cssSelector("button.book-btn");
 
 
-
     private static final By DATE_PICKER_LOCATOR = By.cssSelector("input[type='date']");
     private static final By TIME_DROPDOWN_LOCATOR = By.cssSelector("select.form-control");
     private static final By GUESTS_DROPDOWN_LOCATOR = By.cssSelector("select.form-control");
@@ -31,7 +30,6 @@ public class BookingPage {
     private static final By PHONE_INPUT_LOCATOR = By.cssSelector("input[formcontrolname='phone']");
     private static final By NOTES_TEXTAREA_LOCATOR = By.cssSelector("textarea[formcontrolname='notes']");
     private static final By PAYMENT_RADIO_LOCATOR = By.cssSelector("input[value='card']");
-    //private static final By CONFIRM_BUTTON_LOCATOR = By.cssSelector("button[type='submit']");
     private static final By CONFIRMATION_MODAL_LOCATOR = By.xpath("//div[contains(@class, 'bg-white') and .//h3[contains(text(), 'Booking Confirmed!')]]");
     private static final By BOOKING_REFERENCE_LOCATOR = By.cssSelector("strong");
     private static final By CONFIRM_BUTTON_LOCATOR = By.xpath("//button[contains(., 'Confirm') or contains(., 'Réserver')]");
@@ -48,7 +46,6 @@ public class BookingPage {
 
 
     public void clickBookNowButton() {
-        // This is a fallback if you want to click the first available Book Now button
         List<WebElement> bookButtons = wait.until(
                 ExpectedConditions.presenceOfAllElementsLocatedBy(BOOK_NOW_BUTTON_LOCATOR)
         );
@@ -163,27 +160,13 @@ public class BookingPage {
     public boolean isConfirmButtonDisabled() {
         try {
             WebElement btn = wait.until(ExpectedConditions.presenceOfElementLocated(CONFIRM_BUTTON_LOCATOR));
-
-            // Handle Angular disabled attribute
             String disabledAttr = btn.getAttribute("disabled");
             boolean isActuallyDisabled = disabledAttr != null || !btn.isEnabled();
 
             return isActuallyDisabled;
         } catch (Exception e) {
-            return true;  // If not found → consider disabled
+            return true;
         }
     }
 
-
-
-
-   /* public boolean isConfirmButtonEnabled() {
-        try {
-            WebElement confirmButton = wait.until(ExpectedConditions.presenceOfElementLocated(CONFIRM_BUTTON_LOCATOR));
-            boolean isDisabled = confirmButton.getAttribute("disabled") != null;
-            return !isDisabled && confirmButton.isEnabled();
-        } catch (Exception e) {
-            return false;
-        }
-    }*/
 }

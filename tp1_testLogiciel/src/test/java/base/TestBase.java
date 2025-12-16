@@ -23,26 +23,19 @@ public class TestBase {
     public static void setUp() {
         WebDriverManager.chromedriver().setup();
 
-        // === DISABLE PASSWORD POPUP (Chrome password manager) ===
         Map<String, Object> prefs = new HashMap<>();
         prefs.put("credentials_enable_service", false);
         prefs.put("profile.password_manager_enabled", false);
 
         ChromeOptions options = new ChromeOptions();
         options.setExperimentalOption("prefs", prefs);
-
-        // Optional – make Chrome cleaner and more test-friendly
         options.addArguments("--disable-notifications");
         options.addArguments("--disable-popup-blocking");
         options.addArguments("--disable-save-password-bubble");
         options.addArguments("--disable-blink-features=AutomationControlled");
         options.addArguments("--no-first-run");
         options.addArguments("--no-default-browser-check");
-
-        // Use a fresh profile (avoids old saved password prompts)
         options.addArguments("user-data-dir=C:/selenium-profiles/profile1");
-
-        // === Start Chrome with all these settings ===
         driver = new ChromeDriver(options);
 
         driver.manage().window().maximize();

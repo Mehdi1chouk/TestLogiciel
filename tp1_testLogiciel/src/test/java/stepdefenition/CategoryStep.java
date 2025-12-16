@@ -79,7 +79,6 @@ public class CategoryStep extends TestBase {
     @Then("the category {string} should not exist")
     public void verify_category_not_exists(String categoryName) {
         try {
-            // Verify category doesn't exist
             Assert.assertFalse(
                     "Category '" + categoryName + "' should not exist!",
                     categoryPage.categoryExists(categoryName)
@@ -87,8 +86,6 @@ public class CategoryStep extends TestBase {
 
             ExtentReportManager.getTest().log(Status.PASS,
                     "Category '" + categoryName + "' correctly does not exist");
-
-            // Capture screenshot for expected behavior (same as login negative case)
             String screenshotPath = TestBase.captureScreenshot("EmptyCategory_NotFound_ExpectedBehavior");
             String relativePath = "../screenshots/" + new File(screenshotPath).getName().replace("target/", "");
 
